@@ -219,8 +219,8 @@ public class MSJOpMode extends LinearOpMode {
             robot.wristServo.setDirection(Servo.Direction.REVERSE);
             if (gamepad2.a) {
                 if (servoCounter % 2 == 0) {
-                    robot.leftClawServo.setPosition(.47);
-                    robot.wristServo.setPosition(.68);
+                    robot.leftClawServo.setPosition(.49);
+                    robot.wristServo.setPosition(.70);
                     sleep(500);
                     servoCounter++;
                 } else if (servoCounter % 2 != 0) {
