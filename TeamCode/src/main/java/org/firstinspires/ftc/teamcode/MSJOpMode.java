@@ -54,12 +54,10 @@ import com.qualcomm.robotcore.util.Range;
 //@Disabled
 public class MSJOpMode extends LinearOpMode {
 
-    MSJHardware robot   = new MSJHardware();
+    MSJHardware robot = new MSJHardware();
 
     private ElapsedTime runtime = new ElapsedTime();
-    int servoCounter = 0;
-    int planeCounter = 0;
-    double currentWrist=0;
+
 
     @Override
     public void runOpMode() {
@@ -68,11 +66,6 @@ public class MSJOpMode extends LinearOpMode {
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
-        robot.wristServo.setDirection(Servo.Direction.REVERSE);
-        robot.leftClawServo.setPosition(0);
-        robot.wristServo.setPosition(0.22);
-        robot.rightClawServo.setPosition(0.38);
-
 
 
 
@@ -85,292 +78,62 @@ public class MSJOpMode extends LinearOpMode {
 
 
         // run until the end of the match (driver presses STOP)
-        while (opModeIsActive()) {
+       /* while (opModeIsActive()) {
             telemetry.addData("Path0", "Starting at %7d :%7d",
                     robot.frontLeftMotor.getCurrentPosition(),
                     robot.frontRightMotor.getCurrentPosition(),
                     robot.backLeftMotor.getCurrentPosition(),
-                    robot.backRightMotor.getCurrentPosition(),
-                    robot.wristServo.getPosition(),
-                    robot.leftClawServo.getPosition(),
-                    robot.rightClawServo.getPosition()
-            );
-            telemetry.addData("leftClaw:",robot.leftClawServo.getPosition());
-            telemetry.addData("rightClaw:",robot.rightClawServo.getPosition());
-            // telemetry.addData("Red:", robot.colorSensor.red());
-            // telemetry.addData("Blue:", robot.colorSensor.blue());
-            // telemetry.addData("Green:",robot.colorSensor.green());
+                    robot.backRightMotor.getCurrentPosition()
+                    );
 
-            // Setup a variable for each drive wheel to save power level for telemetry
-            //  double shootPower;
+        */
+
+
+
+
             double frontRightPower;
             double frontLeftPower;
             double backRightPower;
             double backLeftPower;
-            double spinnerPower;
-            double planePower;
-            //double extenderMotorPower;
+            double intakePower;
+            double conveyerPower;
 
 
-            //double armPower;
-
-
-            // Choose to drive using either Tank Mode, or POV Mode
-            // Comment out the method that's not used.  The default below is POV.
-
-            // POV Mode uses left stick to go forward, and right stick to turn.
-            // - This uses basic math to combine motions and is easier to drive straight.
-            //          double shoot = gamepad2.left_stick_y;
             double y = -gamepad1.right_stick_x;
             double x = -gamepad1.left_stick_x;
             double rx = -gamepad1.left_stick_y;
-            double lift = gamepad2.right_stick_y;
-            //double armup = gamepad2.left_trigger;
-            //double armdown = gamepad2.right_trigger;
 
 
 
-            /*if(gamepad1.left_bumper){
-                y*=0.25;
-                x*=0.25;
-                rx*=0.25;
-            }
-            */
-            /*
-            if(gamepad2.dpad_up){
-                robot.clawServo.setPosition(0);
-            }
-            if(gamepad2.dpad_down){
-                robot.clawServo.setPosition(0.25);
-            }
-*/
-            //apparently you cannot set servos to a negative position. Only 0 through 1
 
 
-            // shootPower    = Range.clip(shoot, -1.0, 1.0) ;
+
             frontRightPower = -Range.clip(-x - rx - y, -.5, .5);
             frontLeftPower = -Range.clip(-y - x + rx, -.5, .5);
             backRightPower = Range.clip(x - rx - y, -.5, .5);
             backLeftPower = -Range.clip(x + rx - y, -.5, .5);
 
-            // extenderMotorPower = Range.clip(lift, -1.0, 1.0);
 
 
-            // liftPower    = Range.clip(lift,-1.0,1.0);
-            // armPower = Range.clip(armup-armdown,-.5,.5);
+            robot.LinActMotor.setPower(gamepad1.right_stick_y);
 
-
-            // Tank Mode uses one stick to control each wheel.
-            // - This requires no math, but it is hard to drive forward slowly and keep straight.
-            //leftPower  = -gamepad1.left_stick_y ;
-            // rightPower = -gamepad1.right_stick_y ;
-      /*      if(gamepad2.dpad_left) {
-                robot.liftMotor.setDirection(DcMotor.Direction.FORWARD);
-                robot.liftMotor.setTargetPosition(-3908);
-                robot.liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                robot.liftMotor.setPower(0.5);
-                while(opModeIsActive() && robot.liftMotor.getCurrentPosition() < robot.liftMotor.getTargetPosition())
-                {
-                    telemetry.addData("encoder-liftmotor", robot.liftMotor.getCurrentPosition());
-                    telemetry.update();
-                    idle();
-                }
-                robot.liftMotor.setPower(0.0);
-                robot.liftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            }
-          if(gamepad2.dpad_up) {
-             robot.liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-              robot. liftMotor.setTargetPosition(-5650);
-              robot.liftMotor.setPower(0.5);
-              while(opModeIsActive() && robot.liftMotor.getCurrentPosition() < robot.liftMotor.getTargetPosition())
-              {
-                  telemetry.addData("encoder-liftmotor", robot.liftMotor.getCurrentPosition());
-                  telemetry.update();
-                  idle();
-             }
-              robot.liftMotor.setPower(0.0);
-              robot.liftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-              robot.liftMotor.setDirection(DcMotor.Direction.REVERSE);
-          }
-            if(gamepad2.dpad_down) {
-                robot.liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                robot. liftMotor.setTargetPosition(6750);
-                robot.liftMotor.setPower(0.5);
-                while(opModeIsActive() && robot.liftMotor.getCurrentPosition() < robot.liftMotor.getTargetPosition())
-                {
-                    telemetry.addData("encoder-liftmotor", robot.liftMotor.getCurrentPosition());
-                    telemetry.update();
-                    idle();
-                }
-                robot.liftMotor.setPower(0.0);
-                robot.liftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                robot.liftMotor.setDirection(DcMotor.Direction.REVERSE);
-            }
-            */
-
-
-            /*if(gamepad2.x){
-                robot.armServo.setPosition(0.5);
-            }
-            if(gamepad2.y){
-                robot.armServo.setPosition(-0.5);
-            }
-            */
-            robot.wristServo.setDirection(Servo.Direction.REVERSE);
-            if (gamepad2.a) {
-                if (servoCounter % 2 == 0) {
-                    robot.leftClawServo.setPosition(.49);
-                    robot.wristServo.setPosition(.70);
-                    sleep(500);
-                    servoCounter++;
-                } else if (servoCounter % 2 != 0) {
-                    robot.leftClawServo.setPosition(0);
-                    robot.wristServo.setPosition(0.22);
-                    sleep(500);
-                    servoCounter++;
-                }
-            }
-
-                if(gamepad1.y)
-                    robot.planeMotor.setPower(1);
-            if(gamepad1.x) {
-                    robot.planeMotor.setPower(0);
-            }
-
-
-            if (gamepad1.dpad_up){
-                currentWrist = robot.rightClawServo.getPosition();
-                telemetry.addData("dpad up", gamepad1.dpad_up);
-                robot.rightClawServo.setPosition(currentWrist+.003);
-            }
-            if (gamepad1.dpad_down){
-                currentWrist = robot.rightClawServo.getPosition();
-                telemetry.addData("dpad down", gamepad1.dpad_down);
-                robot.rightClawServo.setPosition(currentWrist-.003);
-
-            }
-            spinnerPower=gamepad2.right_stick_y*0.5;
-            if (gamepad2.right_stick_y != 0){
-
-                robot.spinnerMotor.setPower(gamepad2.right_stick_y*.7);;
-                
-            }
-            else
-                robot.spinnerMotor.setPower(0);
-
-
-           // if(gamepad1.b) {
-             //       spinnerPower = 1;
-            //}
-            //else
-               // spinnerPower = 0;
-
-
-           /* if(gamepad2.right_bumper) {
-                robot.frontRightMotor.setPower(0);
-                robot.frontLeftMotor.setPower(0);
-                robot.backRightMotor.setPower(0);
-                robot.backLeftMotor.setPower(0);
-                robot.armMotor.setDirection(DcMotor.Direction.REVERSE);
-                robot.armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                robot.armMotor.setTargetPosition(610);
-                robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                robot.armMotor.setPower(0.25);
-                while (opModeIsActive() && robot.armMotor.getCurrentPosition() < robot.armMotor.getTargetPosition()) {
-                    telemetry.addData("encoder-armMotor", robot.armMotor.getCurrentPosition());
-                    telemetry.update();
-                    idle();
-                }
-                robot.armMotor.setPower(0);
-                robot.armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            }
-            if(gamepad2.left_bumper) {
-                robot.armMotor.setDirection(DcMotor.Direction.FORWARD);
-                robot.armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                robot.armMotor.setTargetPosition(615);
-                robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                robot.armMotor.setPower(0.25);
-                robot.frontRightMotor.setPower(frontRightPower);
-                robot.frontLeftMotor.setPower(frontLeftPower);
-                robot.backRightMotor.setPower(backRightPower);
-                robot.backLeftMotor.setPower(backLeftPower);
-                while (opModeIsActive() && robot.armMotor.getCurrentPosition() < robot.armMotor.getTargetPosition()) {
-                    telemetry.addData("encoder-armMotor", robot.armMotor.getCurrentPosition());
-                    telemetry.update();
-                    idle();
-                }
-                robot.armMotor.setPower(0);
-                robot.armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                robot.armMotor.setDirection(DcMotor.Direction.REVERSE);
-            }
-*/
-            if(gamepad2.dpad_up) {
-              //  robot.extenderMotor.setPower(-1);
-            }
-
-            if(gamepad2.dpad_down) {
-              //  robot.extenderMotor.setPower(1);
-            }
-
-            if(gamepad2.dpad_right) {
-              //  robot.extenderMotor.setPower(0);
-
-            }
-
-            // armServo command
-
-
-      /*      if (gamepad2.dpad_left) {
-                if (armServoCounter%2 != 0) {
-                    robot.armServo.setPosition(.4);
-                    armServoCounter += 1;
-                }
-                else {
-                    robot.armServo.setPosition(0);
-                    armServoCounter += 1;
-                }
-            }
-            /*
-            if(gamepad2.y){
-                robot.loaderServo.setPower(-0.5);
-            }
-            if(gamepad2.x){
-                robot.loaderServo.setPower(0.0);
-            }
-            if(gamepad2.a){
-                robot.loaderServo.setPower(0.5);
-            }
-*/
-
-            // Send calculated power to wheels
-            //  robot.shooterMotor.setPower(shootPower);
-
+          /*
             robot.frontRightMotor.setPower(frontRightPower);
             robot.frontLeftMotor.setPower(frontLeftPower);
             robot.backRightMotor.setPower(backRightPower);
             robot.backLeftMotor.setPower(backLeftPower);
-            robot.spinnerMotor.setPower(spinnerPower);
-           // robot.extenderMotor.setPower(extenderMotorPower);
+            robot.intakeMotor.setPower(intakePower);
 
-            // robot.liftMotor.setPower(liftPower);
+           */
 
-            // robot.armMotor.setPower(armPower);
-
-
-            // Show the elapsed game time and wheel power.
-            // telemetry.addData("Status", "Run Time: " + runtime.toString());
-            // telemetry.addData("Shooter Motor", "shoot (%.2f)", shootPower);
-            // telemetry.addData("Lift Motor", "lift (%.2f)", liftPower);
-            // telemetry.addData("encoder-liftmotor",robot.liftMotor.getCurrentPosition());
             telemetry.addData("Front Right Motor", "frontRightMotor", frontRightPower);
             telemetry.addData("Front Left Motor", "frontLeftMotor", frontLeftPower);
             telemetry.addData("Back Right Motor", "backRightMotor", backRightPower);
             telemetry.addData("Back Left Motor", "backLeftMotor", backLeftPower);
-            telemetry.addData("Spinner Motor", "spinnerMotor", spinnerPower);
+
             //    telemetry.addData("Claw:",robot.clawServo.getPosition());
             telemetry.update();
 
 
         }
     }
-}
