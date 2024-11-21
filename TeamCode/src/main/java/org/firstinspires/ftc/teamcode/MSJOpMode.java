@@ -58,16 +58,12 @@ public class MSJOpMode extends LinearOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
 
-
     @Override
     public void runOpMode() {
-
         robot.init(hardwareMap);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
-
-
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
@@ -76,64 +72,42 @@ public class MSJOpMode extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
-
         // run until the end of the match (driver presses STOP)
-       /* while (opModeIsActive()) {
+        while (opModeIsActive()) {
             telemetry.addData("Path0", "Starting at %7d :%7d",
                     robot.frontLeftMotor.getCurrentPosition(),
                     robot.frontRightMotor.getCurrentPosition(),
                     robot.backLeftMotor.getCurrentPosition(),
                     robot.backRightMotor.getCurrentPosition()
-                    );
-
-        */
-
-
-
+            );
 
             double frontRightPower;
             double frontLeftPower;
             double backRightPower;
             double backLeftPower;
-            double intakePower;
-            double conveyerPower;
-
 
             double y = -gamepad1.right_stick_x;
             double x = -gamepad1.left_stick_x;
             double rx = -gamepad1.left_stick_y;
-
-
-
-
-
 
             frontRightPower = -Range.clip(-x - rx - y, -.5, .5);
             frontLeftPower = -Range.clip(-y - x + rx, -.5, .5);
             backRightPower = Range.clip(x - rx - y, -.5, .5);
             backLeftPower = -Range.clip(x + rx - y, -.5, .5);
 
+            //robot.LinActMotor.setPower(gamepad1.right_stick_y);
 
-
-            robot.LinActMotor.setPower(gamepad1.right_stick_y);
-
-          /*
             robot.frontRightMotor.setPower(frontRightPower);
             robot.frontLeftMotor.setPower(frontLeftPower);
             robot.backRightMotor.setPower(backRightPower);
             robot.backLeftMotor.setPower(backLeftPower);
-            robot.intakeMotor.setPower(intakePower);
-
-           */
 
             telemetry.addData("Front Right Motor", "frontRightMotor", frontRightPower);
             telemetry.addData("Front Left Motor", "frontLeftMotor", frontLeftPower);
             telemetry.addData("Back Right Motor", "backRightMotor", backRightPower);
             telemetry.addData("Back Left Motor", "backLeftMotor", backLeftPower);
 
-            //    telemetry.addData("Claw:",robot.clawServo.getPosition());
             telemetry.update();
-
-
         }
     }
+}
