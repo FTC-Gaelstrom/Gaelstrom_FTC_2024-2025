@@ -15,10 +15,12 @@ public class MSJHardware {
     //public DcMotor LinActMotor = null;
 
     HardwareMap hwMap = null;
-    public ElapsedTime runtime = new ElapsedTime();
+    public ElapsedTime runtime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
     public MSJHardware() {}
 
     public void init(HardwareMap ahwMap){
+        runtime.reset();
+
         hwMap = ahwMap;
 
         //Set the names you will configure in the Driver Hub
