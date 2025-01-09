@@ -58,12 +58,23 @@ public class MSJOpMode extends LinearOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
 
+    public void raiseArm() {
+        robot.armMotor.setPower(0); //change
+        robot.wristServo.setPosition(0); //change
+        robot.clawServo.setPosition(0); //change
+
+        //will we need a new thread for this so the waiting period before stopping the motor does not block?
+    }
+
     @Override
     public void runOpMode() {
         robot.init(hardwareMap);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
+        double pos = 0.5;
+
+        //int count = 0; //unused from previous build
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
@@ -71,7 +82,6 @@ public class MSJOpMode extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
-
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
             telemetry.addData("Path0", "Starting at %7d :%7d",
@@ -86,14 +96,19 @@ public class MSJOpMode extends LinearOpMode {
             double backRightPower;
             double backLeftPower;
 
-            double y = -gamepad1.right_stick_x;
-            double x = -gamepad1.left_stick_x;
-            double rx = -gamepad1.left_stick_y;
+            double lsx = gamepad1.left_stick_x;     // desmos: X
+            double rsx = gamepad1.right_stick_x;    // desmos: Y
+            double lsy = gamepad1.left_stick_y;     // desmos: Z
+            //double rsy = gamepad1.right_stick_y;
 
-            frontRightPower = -Range.clip(-x - rx - y, -.5, .5);
-            frontLeftPower = -Range.clip(-y - x + rx, -.5, .5);
-            backRightPower = Range.clip(x - rx - y, -.5, .5);
-            backLeftPower = -Range.clip(x + rx - y, -.5, .5);
+            // movement v1:
+            // - left stick for drive/turn
+            // - right stick for strafing
+            // (according to Curtis)
+            frontRightPower = -Range.clip(lsx + lsy + rsx, -.5, .5);
+            frontLeftPower = -Range.clip(rsx + lsx - lsy, -.5, .5);
+            backRightPower = Range.clip(-lsx - lsy + rsx, -.5, .5);
+            backLeftPower = -Range.clip(-lsx + lsy + rsx, -.5, .5);
 
             //robot.LinActMotor.setPower(gamepad1.right_stick_y);
 
@@ -107,7 +122,50 @@ public class MSJOpMode extends LinearOpMode {
             telemetry.addData("Back Right Motor", "backRightMotor", backRightPower);
             telemetry.addData("Back Left Motor", "backLeftMotor", backLeftPower);
 
+            /*if (gamepad2.dpad_up) {
+                robot.armServo.setPosition(1);
+            } else if (gamepad2.dpad_down) {
+                robot.armServo.setPosition(0.2);
+            }*/
+
+            if (gamepad2.left_stick_y == 0)
+                robot.armMotor.setPower(-0.1);
+            else
+                robot.armMotor.setPower(0.3 * gamepad2.left_stick_y);
+
+            if (gamepad2.right_bumper) {
+                robot.clawServo.setPosition(0);
+            }
+
+            if (gamepad2.left_bumper) {
+                robot.clawServo.setPosition(0.5);
+            }
+
+            // "Macro" to raise the arm into position with one button press
+            boolean PLACEHOLDER = false; //replace with desired keystroke
+            if (PLACEHOLDER) {
+                raiseArm();
+            }
+
+            boolean PLACEHOLDER2 = false; //replace with desired keystroke
+            if (PLACEHOLDER2) {
+                //thing
+            }
+
+            /*
+            if (gamepad2.a){
+                if (count % 2 == 0) {
+                    robot.clawServo.setPosition(0.5);
+                    count++;
+                } else {
+                    robot.clawServo.setPosition(0);
+                    count++;
+                }
+            }
+            */
+
             telemetry.update();
+
         }
     }
 }

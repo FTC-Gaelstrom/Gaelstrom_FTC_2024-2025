@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -11,8 +12,9 @@ public class MSJHardware {
     public DcMotor frontLeftMotor = null;
     public DcMotor backRightMotor = null;
     public DcMotor backLeftMotor = null;
-
-    //public DcMotor LinActMotor = null;
+    public DcMotor armMotor = null;
+    public Servo wristServo = null;  //TODOTODOTODOTODOTODOTODOTODOTODOTODOTODOTODO
+    public Servo clawServo = null;
 
     HardwareMap hwMap = null;
     public ElapsedTime runtime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
@@ -28,29 +30,32 @@ public class MSJHardware {
         frontLeftMotor = hwMap.get(DcMotor.class,"frontLeftMotor");
         backRightMotor = hwMap.get(DcMotor.class,"backRightMotor");
         backLeftMotor = hwMap.get(DcMotor.class,"backLeftMotor");
-        //LinActMotor = hwMap.get(DcMotor.class, "LinActMotor");
+        armMotor = hwMap.get(DcMotor.class,"armMotor");
+        clawServo = hwMap.get(Servo.class, "clawServo");
+        wristServo = hwMap.get(Servo.class, "wristServo");
 
         //Set Up Motor Direction
         frontRightMotor.setDirection(DcMotor.Direction.FORWARD);
         frontLeftMotor.setDirection(DcMotor.Direction.FORWARD);
         backRightMotor.setDirection(DcMotor.Direction.FORWARD);
         backLeftMotor.setDirection(DcMotor.Direction.FORWARD);
-        //LinActMotor.setDirection(DcMotor.Direction.FORWARD);
+        armMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
         //Set ZERO POWER BEHAVIOR for Drive Train as BRAKE so that the motors stop turning
         frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        //LinActMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        //set armServo
 
         //Set Motors to use no power
         frontRightMotor.setPower(0);
         frontLeftMotor.setPower(0);
         backRightMotor.setPower(0);
         backLeftMotor.setPower(0);
+        armMotor.setPower(0);
 
-       // LinActMotor.setPower(0);
+        //LinActMotor.setPower(0);
     }
 }
