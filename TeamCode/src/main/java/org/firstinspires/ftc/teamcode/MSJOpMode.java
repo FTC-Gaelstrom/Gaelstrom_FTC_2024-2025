@@ -31,8 +31,6 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -50,6 +48,12 @@ import com.qualcomm.robotcore.util.Range;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
+/**
+ * Gamepad1: Driver
+ * Gamepad2: Controller
+ */
+
+//Push to GH after commit
 @TeleOp(name="Basic: MSJ Linear OpMode", group="Linear Opmode")
 //@Disabled
 public class MSJOpMode extends LinearOpMode {
@@ -58,12 +62,16 @@ public class MSJOpMode extends LinearOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
 
-    public void raiseArm() {
+    private boolean macroToggle = false;
+    public void macro() {
+        if (macroToggle){
+            macroToggle = false;
+        } else {
+            macroToggle = true;
+        }
         robot.armMotor.setPower(0); //change
         robot.wristServo.setPosition(0); //change
         robot.clawServo.setPosition(0); //change
-
-        //will we need a new thread for this so the waiting period before stopping the motor does not block?
     }
 
     @Override
@@ -144,7 +152,7 @@ public class MSJOpMode extends LinearOpMode {
             // "Macro" to raise the arm into position with one button press
             boolean PLACEHOLDER = false; //replace with desired keystroke
             if (PLACEHOLDER) {
-                raiseArm();
+                macro();
             }
 
             boolean PLACEHOLDER2 = false; //replace with desired keystroke
